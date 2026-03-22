@@ -9,7 +9,6 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// 🔥 CONEXÃO COM RETRY REAL
 let db;
 
 function connectWithRetry() {
@@ -25,10 +24,10 @@ function connectWithRetry() {
 
   db.getConnection((err, connection) => {
     if (err) {
-      console.log('⏳ Aguardando MySQL iniciar...');
-      setTimeout(connectWithRetry, 3000); // tenta de novo
+      console.log('Aguardando MySQL iniciar...');
+      setTimeout(connectWithRetry, 3000);
     } else {
-      console.log('✅ Conectado ao MySQL!');
+      console.log('Conectado ao MySQL!');
       connection.release();
     }
   });
@@ -39,7 +38,6 @@ connectWithRetry();
 
 // ================= ROTAS CRUD =================
 
-// GET todos usuários
 app.get('/users', (req, res) => {
   db.query('SELECT * FROM users', (err, results) => {
     if (err) return res.status(500).json(err);
@@ -47,7 +45,6 @@ app.get('/users', (req, res) => {
   });
 });
 
-// GET usuário por ID
 app.get('/users/:id', (req, res) => {
   const { id } = req.params;
   db.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
@@ -56,7 +53,7 @@ app.get('/users/:id', (req, res) => {
   });
 });
 
-// POST criar usuário
+// CRIAR USUÁRIO
 app.post('/users', (req, res) => {
   const { name, email } = req.body;
   db.query(
@@ -69,7 +66,6 @@ app.post('/users', (req, res) => {
   );
 });
 
-// PUT atualizar usuário
 app.put('/users/:id', (req, res) => {
   const { id } = req.params;
   const { name, email } = req.body;
@@ -84,7 +80,7 @@ app.put('/users/:id', (req, res) => {
   );
 });
 
-// DELETE usuário
+// DELETAR USUÁRIO
 app.delete('/users/:id', (req, res) => {
   const { id } = req.params;
 
@@ -94,7 +90,6 @@ app.delete('/users/:id', (req, res) => {
   });
 });
 
-// ================= START =================
 
 app.listen(PORT, () => {
   console.log(`API rodando em http://localhost:${PORT}`);
