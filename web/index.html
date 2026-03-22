@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <title>Cadastro de Usuários</title>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Adicionar Usuários</h1>
+
+    <input type="text" id="name" placeholder="Nome">
+    <input type="email" id="email" placeholder="Email">
+
+    <button onclick="addUser()">Adicionar</button>
+
+
+    <h1>Lista de Usuários</h1>
+
+    <div id="list"></div>
+  </div>
+
+  <script>
+    const API = "http://localhost:3000/users";
+
+    async function loadUsers() {
+      const res = await fetch(API);
+      const users = await res.json();
+
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      users.forEach(user => {
+        list.innerHTML += `
+          <div class="user">
+            <span>${user.name} - ${user.email}</span>
+            <button class="delete" onclick="deleteUser(${user.id})">X</button>
+          </div>
+        `;
+      });
+    }
+
+    async function addUser() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
+      if (!name || !email) {
+        alert("Preencha tudo");
+        return;
+      }
+
+      await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email })
+      });
+
+      document.getElementById("name").value = "";
+      document.getElementById("email").value = "";
+
+      loadUsers();
+    }
+
+    async function deleteUser(id) {
+      await fetch(`${API}/${id}`, {
+        method: "DELETE"
+      });
+
+      loadUsers();
+    }
+
+    loadUsers();
+  </script>
+
+</body>
+</html>
