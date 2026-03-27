@@ -37,7 +37,7 @@ Frontend:
 http://localhost:8080
 
 API:
-http://localhost:3000
+http://localhost:3000/users
 
 ## Endpoints
 
